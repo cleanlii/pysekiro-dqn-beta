@@ -16,6 +16,7 @@
 #### 迭代过程
 研究至今，这个项目经过了数次大规模迭代。它从一个需要人工采集正向数据的仿监督学习算法，慢慢更新扩展至到如今基于DQN算法的深度强化学习系统，途中解决了数个对训练结果影响至深的潜在问题。
 ![s](https://img-blog.csdnimg.cn/2021052312075220.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2NsZWFubGlp,size_16,color_FFFFFF,t_70#pic_center)
+
 如图所示，在研究早期，我的思路尚停留在监督学习方向，即人为提供带标签的样本数据，对智能体进行有针对训练，这是“自学习”概念的最浅层次。例如，在“自学习”alpha版本的系统中，由于智能体不具备判断动作优劣的功能，在人工制作样本时必须确保输入训练模型中的样本数据是正向的，这样的局限性就给整个研究造成了很大的困难。
 “自学习”beta版本没有摆脱此限制，但在数据采集效率上做了一定的优化，修复了各种功能限制bug；在深度强化学习alpha中，本系统采取了新的DQN算法，真正意义上将强化学习的知识应用到了《只狼》里面，首次解决了人工采集的问题，实现了智能体可以自行随即探索的功能；在深度强化学习beta版本中，本系统在精简代码、优化网络结构的同时，做了一些工具化尝试。
 
@@ -23,15 +24,18 @@
 #### 强化学习理论
 一般认为，强化学习的四大基本要素分别是：状态（state）、动作（action）、策略（policy）、奖励（reward）。
 ![1](https://img-blog.csdnimg.cn/20210523113818130.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2NsZWFubGlp,size_16,color_FFFFFF,t_70#pic_center)
+
 如图所示，强化学习研究的是智能体与环境的交互。智能体通过对环境的观察，得到与环境相关的状态信息，然后根据该信息判断下一步应该进行何种决策，并做出与之相应的动作，环境在接收到智能体的动作信息之后给予一定反馈作为奖励，这里的奖励可以是正面的，也可以是负面的，旨在反映该动作的好坏程度。
 与此同时，来自智能体的该动作也会对环境造成一定影响，从而使上一个状态信息发生变化，转而再次进行判断，由此往复。最终，智能体生成了一系列的状态－动作序列。而智能体的目标就是根据这一组组序列，使其得到在这段时间内的最大奖励累计，生成一组组最优行为策略。
 ![2](https://img-blog.csdnimg.cn/20210523113915166.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2NsZWFubGlp,size_16,color_FFFFFF,t_70#pic_center)
+
 这里以机制简单的2D像素游戏《疯狂小鸟（Flappy Bird）》为例，对应到前面提到的强化学习四要素：智能体agent指的是这只小鸟，小鸟周围的天空背景、管道分布即environment，游戏中小鸟的目标是越飞越远，所以reward可以简单描述成飞得越远奖励分数就越高，action是小鸟每一次飞翔的操作，state则是每一帧画面的像素值分布。一个面向游戏的强化学习系统的目标即训练智能体可以控制这只鸟尽可能取得高分。
 这个例子可以很好地解释大部分游戏AI的基础思路。
 #### 深度强化学习理论
 近年，神经网络在图像识别领域取得了显著的成果，得益于其强大的特征提取能力。卷积神经网络可以从原始复杂的高维数据中提取特征，这也是本文能用实时画面捕获的方式实现游戏AI的原因。
 深度强化学习（Deep Reinforcement Learning，DRL）将深度学习较强的感知能力和强化学习较强的决策能力相结合，可以直接根据输入的图像进行控制，是一种更接近人类思维方式的人工智能方法。
 ![3](https://img-blog.csdnimg.cn/20210523114130202.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2NsZWFubGlp,size_16,color_FFFFFF,t_70#pic_center)
+
 如图所示，传统的强化学习算法是Q-Learning，引申了一个不断更新的Q表格（保存当前状态的基本元素）去逼近奖励函数，从而得到最优策略。但这样的方法无法处理复杂的电子游戏，因为每一帧游戏画面都是不同的state，对于表格更新来说计算量过于庞大。于是深度强化学习算法应运而生。研究者将状态值state与动作值action的集合输入神经网络，训练得到每个动作值对应的值函数value，代表了该动作的好坏程度。而在测试模型时只输入状态值state，预测多个动作值和其值函数，从而进行最优决策。这与人类通过五官向大脑传递信息学习各类健身操的经历类似。
 深度Q网络（Deep Q-Learning Network，DQN）是深度强化学习的代表算法。DQN的核心思路在于用神经网络取代Q表格更新的方法去进行拟合，即使用神经网络逼近奖励函数，以激励智能体进行最优动作。
 ![4](https://img-blog.csdnimg.cn/20210523114657722.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2NsZWFubGlp,size_16,color_FFFFFF,t_70#pic_center)
