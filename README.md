@@ -9,7 +9,7 @@
 - 处理器：AMD Ryzen 5 3600
 - GPU：NVIDIA RTX 2060
 - 内存：16GB
-- 操作系统：Windows 10。
+- 操作系统：Windows 10
 - Tensorflow版本：2.4.1
 - CUDA版本：11.3
 - cuDNN版本：8.1.1
