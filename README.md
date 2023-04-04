@@ -8,7 +8,7 @@
 本文训练和测试模型所使用的机器配置如下：
 - 处理器：AMD Ryzen 5 3600
 - GPU：NVIDIA RTX 2060
-- 内存为：6GB
+- 内存：16GB
 - 操作系统：Windows 10。
 - Tensorflow版本：2.4.1
 - CUDA版本：11.3
